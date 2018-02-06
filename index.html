@@ -3,14 +3,18 @@
 
 <head>
 	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" defer></script>
 </head>
 
 <body>
-<script src="promise.js" defer></script>
-<button id="button">Загрузить phones.json!</button>
-<ul id="list"></ul>
-
-
+<script src="ajax.js" defer></script>
+<div class="container">
+	<div class="jumbotron">
+		<button id="button" class="btn btn-primary btn-lg float-right" onclick="loadPhones()">Загрузить phones.json!</button>
+	</div>
+</div>
 
 </body>
 

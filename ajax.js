@@ -1,50 +1,42 @@
 function loadPhones() {
-
 	let xhr = new XMLHttpRequest();
+	xhr.open('GET', 'phones.json', true)
+	xhr.send()
 
-	xhr.open('GET', 'phones.json', true);
+	xhr.onreadystatechange = function () {
+		if(xhr.readyState != 4) return
+		button.innerHTML = 'Готово'
 
-	xhr.onload = function() {
-		button.innerHTML = 'Готово!';
-		console.log("Loading complete");
-
-		if (xhr.status != 200) {
-			// обработать ошибку
-			alert(xhr.status + ': ' + xhr.statusText);
+		if (xhr.status !== 200) {
+			console.log('Error', xhr.status + ':' + xhr.statusText)
 		} else {
-			try {
-				var phones = JSON.parse(xhr.responseText);
-			} catch (err) {
-				alert('Ошибка ' + err.name + ': ' + err.message);
-			}
-			// вывести результат
-			showPhones(phones);
-		}
-	};
+			let phoneList = JSON.parse(xhr.responseText)
+			let newUl = document.createElement('ul')
 
-	xhr.onerror = function () {
-		alert("Данные не загружены");
-	};
+			newUl.id = 'list'
+			document.body.children[1].appendChild(newUl)
 
-	xhr.send();
+			getLi()
 
-	function showPhones(phones) {
-
-		phones.forEach( (phone) => {
-			try {
-				if (!phone.name) {
-					throw new SyntaxError("Данные не корректны");
+			function getLi () {
+				for (let item in phoneList) {
+					let newLi = document.createElement('li')
+					let h4 = document.createElement('h4')
+					let p = document.createElement('p')
+					newLi.id = phoneList[item].id
+					h4.innerHTML = phoneList[item].name
+					p.innerHTML = phoneList[item].snippet
+					p.className = 'card-text'
+					newLi.appendChild(h4)
+					newLi.appendChild(p)
+					newUl.appendChild(newLi)
+					console.log(phoneList[item].id)
 				}
-
-				let li = list.appendChild(document.createElement('li'));
-				li.innerHTML = phone.name;
-			} catch (err) {
-				alert("Извините, в данных ошибка");
 			}
-
-		});
+		}
 	}
 
-	button.innerHTML = 'Загружаю...';
-	button.disabled = true;
+	button.innerHTML = 'Загружаю...'
+	button.disabled = true
+
 }
