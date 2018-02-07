@@ -1,65 +1,59 @@
-function loadPhones() {
+function loadPhones () {
+	httpGet('./phones.json')
+		.then(
+			response => {
+				let phoneList = JSON.parse(response)
+				getPhoneList(phoneList)
+				button.parentNode.removeChild(button)
+			},
 
-	return new Promise(function (resolve, reject) {
-		let xhr = new XMLHttpRequest();
-
-		xhr.open('GET', 'phones.json', true);
-
-		xhr.onload = function() {
-			button.innerHTML = 'Готово!';
-			console.log("Loading complete");
-
-			if (xhr.status != 200) {
-				// обработать ошибку
-				let error = new Error(this.statusText);
-				error.code = this.status;
-				reject(error);
-			} else {
-				resolve(this.responseText);
+			error => {
+				console.log(error)
 			}
-		};
-
-		xhr.onerror = function() {
-			reject(new Error("Network Error"));
-		};
-
-		xhr.send();
-
-		button.innerHTML = 'Загружаю...';
-		button.disabled = true;
-	});
-
+		)
+	button.innerHTML = 'Загружаю...'
+	button.disabled = true
 }
 
-button.onclick = loadPhones()
-	.then(
-		response => {
-			try {
-				var phones = JSON.parse(response);
-			} catch (err) {
-				alert('Ошибка ' + err.name + ': ' + err.message);
+function httpGet(url) {
+	return new Promise((resolve, reject) => {
+		let xhr = new XMLHttpRequest();
+		xhr.open('GET', url, true)
+
+		xhr.onload = function() {
+			if (this.status === 200) {
+				resolve(this.response);
+			} else {
+				let error = new Error(this.statusText)
+				error.code = this.status
+				reject(error)
 			}
-			// вывести результат
-			showPhones(phones);
-		},
-		error => alert(`${error}`)
-	);
+		}
 
-		//alert(xhr.status + ': ' + xhr.statusText);
+		xhr.onerror = function() {
+			reject(new Error("Network Error"))
+		}
+		xhr.send()
+	})
+}
 
- function showPhones(phones) {
- 	phones.forEach( (phone) => {
- 		try {
- 			if (!phone.name) {
- 				throw new SyntaxError("Данные не корректны");
- 			}
+function getPhoneList (phones) {
+	let newUl = document.createElement('ul')
 
- 			let li = list.appendChild(document.createElement('li'));
- 			li.innerHTML = phone.name;
- 			} catch (err) {
- 				alert("Извините, в данных ошибка");
- 			}
+	newUl.id = 'list'
+	document.body.children[1].appendChild(newUl)
 
- 	});
- }
-
+	for (let item in phones) {
+		let newLi = document.createElement('li')
+		let h4 = document.createElement('h4')
+		let p = document.createElement('p')
+		newLi.id = phones[item].id
+		h4.innerHTML = phones[item].name
+		p.innerHTML = phones[item].snippet
+		p.className = 'card-text'
+		newLi.appendChild(h4)
+		newLi.appendChild(p)
+		newUl.appendChild(newLi)
+		console.log(phones[item].id)
+	}
+}
