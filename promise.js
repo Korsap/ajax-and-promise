@@ -12,12 +12,15 @@ function loadPhones () {
 				let phoneList = JSON.parse(response)
 				buildPhoneList(phoneList)
 				button.parentNode.removeChild(button)
-			},
+			}/*,
 
 			error => {
 				console.log(error)
-			}
+			}*/
 		)
+		.catch(error => {
+			console.log(error)
+		})
 	button.innerHTML = 'Загружаю...'
 	button.disabled = true
 }
